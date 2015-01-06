@@ -22,7 +22,7 @@ angular.module("mapContainer.tsiotsias.uk")
 		// create the map & display
 		var map = new google.maps.Map(mapElement, myOptions);
 		// define the function to centre at current location
-		var useMyCurrentLocation = function () {
+		var useMyCurrentLocation = function (command) {
 			// Try W3C Geolocation (Preferred)
 			  if(navigator.geolocation) {
 			    browserSupportFlag = true;
@@ -48,6 +48,7 @@ angular.module("mapContainer.tsiotsias.uk")
 			      window.alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
 			    }
 			  }
+                    alert("Was given command:"+command);
 		}
 		// store in the root scope the reference to the map controller - this should be
 		// sufficient to access all the other inner variables
