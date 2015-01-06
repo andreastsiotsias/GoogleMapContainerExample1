@@ -1,0 +1,46 @@
+@CHARSET "ISO-8859-1";
+html, body {
+  height: 100%;
+  /* The html and body elements cannot have any padding or margin. */
+}
+.navbar-default {margin: 0; background: #808080;}
+/* Wrapper for page content to push down footer */
+#wrap {
+  min-height: 100%;
+  height: 100%;
+  /* Negative indent footer by its height */
+  margin: 0 auto -32px;
+  /* Pad bottom by footer height */
+  padding: 0 0 100px;
+}
+
+/* Set the fixed height of the footer here */
+#footer {
+  height: 32px;
+  background: #808080;
+}
+
+body {
+    /* Body's background will be grey */
+    background-color: #808080;
+}
+#main-container {
+    min-height: 100%;
+    background: #c0c0c0;
+}
+#map-container {
+	right:0;
+    bottom:0;
+    top:0;
+    left: 0;
+    overflow:hidden;
+    margin-bottom:34px;
+    margin-top:66px;
+    position:absolute;
+}
+h2 {
+	color: #f8f8ff;
+}
+h6 {
+	color: #f8f8ff;
+}
