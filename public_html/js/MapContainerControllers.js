@@ -48,7 +48,7 @@ angular.module("mapContainer.tsiotsias.uk")
 			      window.alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
 			    }
 			  }
-                    alert("Was given command:"+command);
+                    //alert("Was given command:"+command);
 		}
 		// store in the root scope the reference to the map controller - this should be
 		// sufficient to access all the other inner variables
