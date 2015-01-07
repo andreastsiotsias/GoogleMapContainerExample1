@@ -51,7 +51,7 @@ angular.module("mapContainer.tsiotsias.uk")
 			    if (errorFlag == true) {
 			      window.alert("Geolocation service failed.");
 			    } else {
-			      window.alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
+			      window.alert("Your browser doesn't support geolocation");
 			    }
 			  }
                     //alert("Was given command:"+command);
