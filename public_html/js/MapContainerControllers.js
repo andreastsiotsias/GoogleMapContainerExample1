@@ -16,12 +16,12 @@ angular.module("mapContainer.tsiotsias.uk")
             zoomControl: false,
             scaleControl: true,
             overviewMapControl: true,
-            mapTypeControl: false,
             streetViewControl: false,
+            mapTypeControl: false,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        var homeLatLng = new google.maps.LatLng(51.4720202,-0.4543496);
-        var homeZoom = 17;
+        var homeLatLng = new google.maps.LatLng(52.339526,-1.5595517);
+        var homeZoom = 15;
         // get the map container element
         var mapElement = $element[0];
 	// create the map & display
@@ -31,15 +31,18 @@ angular.module("mapContainer.tsiotsias.uk")
         // call the HomeControl() constructor passing
         // in this DIV.
         var homeControlDiv = document.createElement('div');
+        homeControlDiv.className = 'btn-group';
         var homeControl = new HomeControl(homeControlDiv, map);
-        homeControlDiv.index = 1;
-        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
+        //homeControlDiv.index = 1;
+        var currentLocationControl = new CurrentLocationControl(homeControlDiv, map);
+        //homeControlDiv.index = 2;
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(homeControlDiv);
         //
  	// store in the root scope the reference to the map controller - this should be
 	// sufficient to access all the other inner variables
 	$rootScope.mapController = mapController;
 	// define the function to centre at current location
-	var useMyCurrentLocation = function useMyCurrentLocation (command) {
+	var useMyCurrentLocation = function useMyCurrentLocation () {
             // Try W3C Geolocation (Preferred)
             if(navigator.geolocation) {
 		browserSupportFlag = true;
@@ -68,6 +71,7 @@ angular.module("mapContainer.tsiotsias.uk")
 		}
             }
         };
+        // store the function reference in the root scope, so we can call it from the view
         $rootScope.mapController.useMyCurrentLocation = useMyCurrentLocation;
         //
         // add a control to the map
@@ -79,31 +83,43 @@ angular.module("mapContainer.tsiotsias.uk")
         */
         function HomeControl(controlDiv, map) {
             // Set CSS styles for the DIV containing the control
-            // Setting padding to 5 px will offset the control
-            // from the edge of the map
             controlDiv.style.padding = '5px';
-            // Set CSS for the control border
             var controlUI = document.createElement('div');
-            controlUI.style.backgroundColor = 'white';
-            controlUI.style.borderStyle = 'solid';
-            controlUI.style.borderWidth = '2px';
             controlUI.style.cursor = 'pointer';
-            controlUI.style.textAlign = 'center';
             controlUI.title = 'Click to set the map to Home';
             controlDiv.appendChild(controlUI);
-            // Set CSS for the control interior
-            var controlText = document.createElement('div');
-            controlText.style.fontFamily = 'Arial,sans-serif';
-            controlText.style.fontSize = '12px';
-            controlText.style.paddingLeft = '4px';
-            controlText.style.paddingRight = '4px';
-            controlText.innerHTML = '<b>Home</b>';
+            var controlText = document.createElement('Button');
+            controlText.textContent = 'Home';
+            controlText.className = 'btn btn-primary btn-sm';
+            controlText.style = 'width: 62px;';
             controlUI.appendChild(controlText);
             // Setup the click event listeners: simply set the map to
             // Heathrow
             google.maps.event.addDomListener(controlUI, 'click', function() {
                 map.setZoom(homeZoom);
                 map.setCenter(homeLatLng);
+            });
+        }
+        //
+        // define function to use current location
+        function CurrentLocationControl(controlDiv, map) {
+            // Set CSS styles for the DIV containing the control
+            controlDiv.style.padding = '5px';
+            var currentLocationControlUI = document.createElement('div');
+            currentLocationControlUI.style.cursor = 'pointer';
+            currentLocationControlUI.title = 'Click to set the map to Current Location';
+            controlDiv.appendChild(currentLocationControlUI);
+            var controlText = document.createElement('Button');
+            controlText.textContent = 'Current';
+            controlText.className = 'btn btn-primary btn-sm';
+            controlText.style = 'width: 62px;';
+            currentLocationControlUI.appendChild(controlText);
+            // Setup the click event listeners: simply set the map to
+            // Warwick
+            google.maps.event.addDomListener(currentLocationControlUI, 'click', function() {
+                //map.setZoom(homeZoom);
+                //map.setCenter(new google.maps.LatLng(52.2920135,-1.5994146));
+                useMyCurrentLocation();
             });
         }
 }]);
