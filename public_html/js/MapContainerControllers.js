@@ -2,10 +2,10 @@
  * 
  */
 angular.module("mapContainer.tsiotsias.uk")
-	.controller("MapController", ['$rootScope','$scope', '$element', 
-	                      function($rootScope, $scope, $element) {
-		// get the current controller address
-		var mapController = this;
+    .controller("MapController", ['$rootScope','$scope', '$element',
+        function($rootScope, $scope, $element) {
+	// get the current controller address
+	var mapController = this;
 		// set up a default latitude & lognitude (Europe zoomed out)
 		var latlng = new google.maps.LatLng(47.73855,12.5088275);
 		// set up some starter options
