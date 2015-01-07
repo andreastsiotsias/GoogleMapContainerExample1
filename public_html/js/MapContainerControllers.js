@@ -12,6 +12,12 @@ angular.module("mapContainer.tsiotsias.uk")
         var myOptions = {
             zoom: 4,
             center: latlng,
+            panControl: false,
+            zoomControl: false,
+            scaleControl: true,
+            overviewMapControl: true,
+            mapTypeControl: false,
+            streetViewControl: false,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         // get the map container element
@@ -49,7 +55,7 @@ angular.module("mapContainer.tsiotsias.uk")
 			    }
 			  }
                     //alert("Was given command:"+command);
-		}
+		};
 		// store in the root scope the reference to the map controller - this should be
 		// sufficient to access all the other inner variables
 		$rootScope.mapController = mapController;
