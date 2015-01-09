@@ -2,81 +2,23 @@
  * 
  */
 angular.module("mapContainer.tsiotsias.uk")
-    .controller("MapController", ['$rootScope','$scope', '$element',
-        function($rootScope, $scope, $element) {
+    .controller("MapController", ['$rootScope','$scope', '$element', 'getLocationsService',
+        function($rootScope, $scope, $element, getLocationsService) {
 	// get the current controller address
 	var mapController = this;
-	// set up a default latitude & lognitude (Europe zoomed out)
-	var latlng = new google.maps.LatLng(47.73855,12.5088275);
-	// set up some starter options
-        var myOptions = {
-            zoom: 4,
-            center: latlng,
-            panControl: false,
-            zoomControl: false,
-            scaleControl: true,
-            overviewMapControl: true,
-            streetViewControl: false,
-            mapTypeControl: false,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        var homeLatLng = new google.maps.LatLng(52.339526,-1.5595517);
-        var homeZoom = 15;
-        // get the map container element
-        var mapElement = $element[0];
-	// create the map & display
-	var map = new google.maps.Map(mapElement, myOptions);
-        // put an initial marker on the map
-        var mapPointer = new google.maps.Marker({position: latlng, map: map, title: 'Starting position ...'});
-        //
-        // Create the DIV to hold the control and
-        // call the HomeControl() constructor passing
-        // in this DIV.
-        var homeControlDiv = document.createElement('div');
-        //homeControlDiv.className = 'btn-group';
-        var homeControl = new HomeControl(homeControlDiv, map);
-        //homeControlDiv.index = 1;
-        var currentLocationControl = new CurrentLocationControl(homeControlDiv, map);
-        //homeControlDiv.index = 2;
-        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
-        //
- 	// store in the root scope the reference to the map controller - this should be
-	// sufficient to access all the other inner variables
-	$rootScope.mapController = mapController;
-	// define the function to centre at current location
-	var useMyCurrentLocation = function useMyCurrentLocation () {
-            // Try W3C Geolocation (Preferred)
-            if(navigator.geolocation) {
-		browserSupportFlag = true;
-		navigator.geolocation.getCurrentPosition(function(position) {
-		initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-		map.setZoom(14);
-		map.setCenter(initialLocation);
-		//map.panTo(initialLocation);
-                mapPointer.position = initialLocation;
-                mapPointer.title = 'Current Location';
-                }, 
-                function() {
-                    handleNoGeolocation(browserSupportFlag);
-		});
-            }
-            // Browser doesn't support Geolocation
-            else {
-                browserSupportFlag = false;
-                handleNoGeolocation(browserSupportFlag);
-            }
-            // provide the missing capability handling
-            function handleNoGeolocation(errorFlag) {
-                if (errorFlag == true) {
-                    window.alert("Geolocation service failed.");
-		}
-                else {
-                    window.alert("Your browser doesn't support geolocation");
-		}
-            }
-        };
-        // store the function reference in the root scope, so we can call it from the view
-        $rootScope.mapController.useMyCurrentLocation = useMyCurrentLocation;
+        // declare some variable with controller-wide scope
+        var homeTitle;
+        var homeLatLng;
+        var homeZoom;
+        var map;
+        var mapPointer;
+        var useMyCurrentLocation;
+        // Get a list of Locations to build for
+        var locationsPromise = getLocationsService.getData();
+        locationsPromise.then(function(result) {  // this is only run after $http completes
+            locations = result;
+            initialiseMap();
+            });        
         //
         // add a control to the map
         /**
@@ -111,9 +53,7 @@ angular.module("mapContainer.tsiotsias.uk")
             google.maps.event.addDomListener(controlUI, 'click', function() {
                 map.setZoom(homeZoom);
                 map.setCenter(homeLatLng);
-                mapPointer.position = homeLatLng;
-                mapPointer.title = 'Home';
-        
+                moveMapPointer (homeLatLng,homeTitle);
             });
         }
         //
@@ -146,5 +86,85 @@ angular.module("mapContainer.tsiotsias.uk")
                 //map.setCenter(new google.maps.LatLng(52.2920135,-1.5994146));
                 useMyCurrentLocation();
             });
+        }
+        //
+        // Move primary marker to a specified position and
+        // specify a new title for it
+        function moveMapPointer (newPos, newTitle) {
+            mapPointer.setPosition(newPos);
+            mapPointer.setTitle(newTitle);
+        }
+        //
+        function initialiseMap(){
+            // set up some starter options
+            // set up the initial latitude & lognitude
+            var initialLatLng = new google.maps.LatLng(locations.Initial.Lat, locations.Initial.Lng);
+            var myOptions = {
+                zoom: locations.Initial.Zoom,
+                center: initialLatLng,
+                panControl: false,
+                zoomControl: false,
+                scaleControl: true,
+                overviewMapControl: true,
+                streetViewControl: false,
+                mapTypeControl: false,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            homeTitle = locations.Home.Title;
+            homeLatLng = new google.maps.LatLng(locations.Home.Lat, locations.Home.Lng);
+            homeZoom = locations.Home.Zoom;
+            // get the map container element
+            var mapElement = $element[0];
+            // create the map & display
+            map = new google.maps.Map(mapElement, myOptions);
+            // put an initial marker on the map
+            mapPointer = new google.maps.Marker({
+                position: initialLatLng, 
+                map: map, 
+                title: locations.Initial.Title});
+            //
+            // Create the DIV to hold the control and
+            // call the HomeControl() constructor passing
+            // in this DIV.
+            var homeControlDiv = document.createElement('div');
+            var homeControl = new HomeControl(homeControlDiv, map);
+            var currentLocationControl = new CurrentLocationControl(homeControlDiv, map);
+            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
+            //
+            // store in the root scope the reference to the map controller
+            $rootScope.mapController = mapController;
+            // define the function to centre map at current location
+            useMyCurrentLocation = function useMyCurrentLocation () {
+                // Try W3C Geolocation (Preferred)
+                if(navigator.geolocation) {
+                    browserSupportFlag = true;
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                    initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+                    map.setZoom(14);
+                    map.setCenter(initialLocation);
+                    // put the pointer in
+                    moveMapPointer (initialLocation,'Current Location');
+                    }, 
+                    function() {
+                        handleNoGeolocation(browserSupportFlag);
+                    });
+                }
+                // Browser doesn't support Geolocation
+                else {
+                    browserSupportFlag = false;
+                    handleNoGeolocation(browserSupportFlag);
+                }
+                // provide the missing capability handling
+                function handleNoGeolocation(errorFlag) {
+                    if (errorFlag == true) {
+                        window.alert("Geolocation service failed.");
+                    }
+                    else {
+                        window.alert("Your browser doesn't support geolocation");
+                    }
+                }
+            };
+            // store the function reference in the root scope, so we can call it from the view
+            $rootScope.mapController.useMyCurrentLocation = useMyCurrentLocation;
         }
 }]);

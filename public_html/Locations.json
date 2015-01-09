@@ -1,0 +1,33 @@
+{
+ 
+    "Home": {
+        "Title": "Linden",
+        "Lat": 52.339526,
+        "Lng": -1.5595517,
+        "Zoom": 15},
+    "Initial": {
+        "Title": "Start Point",
+        "Lat": 47.73855,
+        "Lng": 12.5088275,
+        "Zoom": 4},
+    "Target": [
+        {
+            "Title": "Heathrow Overall",
+            "Lat": 51.4722141,
+            "Lng": -0.4563559,
+            "Zoom": 14
+        },
+        {
+            "Title": "Heathrow T1,T2,T3",
+            "Lat": 51.4709832,
+            "Lng": -0.4548122,
+            "Zoom": 17
+        },
+        {
+            "Title": "Heathrow T5",
+            "Lat": 51.4717384,
+            "Lng": -0.4871811,
+            "Zoom": 17
+        }
+    ]
+}
