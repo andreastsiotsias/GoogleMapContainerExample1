@@ -131,6 +131,14 @@ angular.module("mapContainer.tsiotsias.uk")
             var currentLocationControl = new CurrentLocationControl(homeControlDiv, map);
             map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
             //
+            // Check if any 'predefined' locations have been specified
+            if (locations.Target.length > 0) {
+                alert("Predefined Locations : "+locations.Target.length);
+                for (i=0;i<locations.Target.length; i++) {
+                    alert("Location "+i+" Title : "+locations.Target[i].Title);
+                }
+            }
+            //
             // store in the root scope the reference to the map controller
             $rootScope.mapController = mapController;
             // define the function to centre map at current location
