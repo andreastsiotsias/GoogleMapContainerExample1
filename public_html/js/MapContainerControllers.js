@@ -85,6 +85,33 @@ angular.module("mapContainer.tsiotsias.uk")
                 useMyCurrentLocation();
             });
         }
+        function OtherLocationsControl(controlDiv, map) {
+            // Set CSS styles for the DIV containing the control
+            controlDiv.style.padding = '5px';
+            var otherLocationControlUI = document.createElement('div');
+            otherLocationControlUI.style.cursor = 'pointer';
+            otherLocationControlUI.title = 'Click to choose from a list of locations';
+            otherLocationControlUI.style.position = "relative";
+            otherLocationControlUI.style.display = "inline";
+            otherLocationControlUI.style.margin = "2px";
+            controlDiv.appendChild(otherLocationControlUI);
+            var controlText = document.createElement('Button');
+            controlText.textContent = 'Other Pre-Defined Location  ';
+            controlText.className = 'btn btn-primary btn-xs';
+            //controlText.style = 'width: 62px;';
+            controlText.style.position = "relative";
+            controlText.style.display = "inline";
+            //controlText.style.margin = "5px";
+            otherLocationControlUI.appendChild(controlText);
+            //var controlTextGlyph = document.createElement('span');
+            //controlTextGlyph.className = 'glyphicon glyphicon-list';
+            //controlText.appendChild(controlTextGlyph);
+            // Setup the click event listeners: 
+            google.maps.event.addDomListener(otherLocationControlUI, 'click', function() {
+                alert("Pressed Other Location");
+                //useMyCurrentLocation();
+            });
+        }
         //
         // Move primary marker to a specified position and
         // specify a new title for it
@@ -127,6 +154,7 @@ angular.module("mapContainer.tsiotsias.uk")
             var homeControlDiv = document.createElement('div');
             var homeControl = new HomeControl(homeControlDiv, map);
             var currentLocationControl = new CurrentLocationControl(homeControlDiv, map);
+            var otherLocationsControl = new OtherLocationsControl(homeControlDiv, map);
             map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
             //
             // Check if any 'predefined' locations have been specified
