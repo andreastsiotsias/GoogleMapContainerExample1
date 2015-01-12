@@ -82,8 +82,6 @@ angular.module("mapContainer.tsiotsias.uk")
             // Setup the click event listeners: simply set the map to
             // Warwick
             google.maps.event.addDomListener(currentLocationControlUI, 'click', function() {
-                //map.setZoom(homeZoom);
-                //map.setCenter(new google.maps.LatLng(52.2920135,-1.5994146));
                 useMyCurrentLocation();
             });
         }
@@ -133,10 +131,10 @@ angular.module("mapContainer.tsiotsias.uk")
             //
             // Check if any 'predefined' locations have been specified
             if (locations.Target.length > 0) {
-                alert("Predefined Locations : "+locations.Target.length);
-                for (i=0;i<locations.Target.length; i++) {
-                    alert("Location "+i+" Title : "+locations.Target[i].Title);
-                }
+                //alert("Predefined Locations : "+locations.Target.length);
+                //for (i=0;i<locations.Target.length; i++) {
+                //    alert("Location "+i+" Title : "+locations.Target[i].Title);
+                //}
             }
             //
             // store in the root scope the reference to the map controller
