@@ -87,8 +87,9 @@ angular.module("mapContainer.tsiotsias.uk")
         }
         function OtherLocationsControl(controlDiv, map) {
             // Set CSS styles for the DIV containing the control
-            controlDiv.style.padding = '5px';
+            //controlDiv.style.padding = '5px';
             var otherLocationControlUI = document.createElement('div');
+            otherLocationControlUI.className = 'btn-group'
             otherLocationControlUI.style.cursor = 'pointer';
             otherLocationControlUI.title = 'Click to choose from a list of locations';
             otherLocationControlUI.style.position = "relative";
@@ -96,19 +97,35 @@ angular.module("mapContainer.tsiotsias.uk")
             otherLocationControlUI.style.margin = "2px";
             controlDiv.appendChild(otherLocationControlUI);
             var controlText = document.createElement('Button');
-            controlText.textContent = 'Other Pre-Defined Location  ';
-            controlText.className = 'btn btn-primary btn-xs';
+            controlText.textContent = 'Other Locations  ';
+            controlText.className = 'btn btn-primary dropdown-toggle';
+            controlText.setAttribute("type",'button');
+            controlText.setAttribute("data-toggle", 'dropdown');
+            controlText.setAttribute("aria-expanded",'false');
             //controlText.style = 'width: 62px;';
-            controlText.style.position = "relative";
-            controlText.style.display = "inline";
+            //controlText.style.position = "relative";
+            //controlText.style.display = "inline";
             //controlText.style.margin = "5px";
             otherLocationControlUI.appendChild(controlText);
-            //var controlTextGlyph = document.createElement('span');
-            //controlTextGlyph.className = 'glyphicon glyphicon-list';
-            //controlText.appendChild(controlTextGlyph);
+            var controlTextGlyph = document.createElement('span');
+            controlTextGlyph.className = 'caret';
+            controlText.appendChild(controlTextGlyph);
+            // create the other locations menu container
+            var otherLocationsListContainer = document.createElement('ul');
+            otherLocationsListContainer.className = 'dropdown-menu';
+            otherLocationsListContainer.setAttribute("role",'menu');
+            otherLocationControlUI.appendChild(otherLocationsListContainer);
+            // add the other locations items
+            var item1 = document.createElement('li');
+            item1.textContent = 'First Location';
+            otherLocationsListContainer.appendChild(item1);
+            var item2 = document.createElement('li');
+            item2.textContent = 'Second Location';
+            otherLocationsListContainer.appendChild(item2);
             // Setup the click event listeners: 
-            google.maps.event.addDomListener(otherLocationControlUI, 'click', function() {
-                alert("Pressed Other Location");
+            google.maps.event.addDomListener(otherLocationsListContainer, 'click', function() {
+                //alert("Pressed Other Location");
+                console.log("Pressed Other Location");
                 //useMyCurrentLocation();
             });
         }
