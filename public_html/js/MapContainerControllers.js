@@ -10,6 +10,9 @@ angular.module("mapContainer.tsiotsias.uk")
         var homeTitle;
         var homeLatLng;
         var homeZoom;
+        var initialTitle;
+        var initialLatLng;
+        var initialZoom;
         var map;
         var mapPointer;
         var useMyCurrentLocation;
@@ -27,7 +30,7 @@ angular.module("mapContainer.tsiotsias.uk")
         * the control DIV as an argument.
         * @constructor
         */
-        function HomeControl(controlDiv, map) {
+        function HomeLocationControl(controlDiv, map) {
             // Set CSS styles for the DIV containing the control
             controlDiv.style.padding = '5px';
             var controlUI = document.createElement('div');
@@ -85,48 +88,62 @@ angular.module("mapContainer.tsiotsias.uk")
                 useMyCurrentLocation();
             });
         }
+        //
         function OtherLocationsControl(controlDiv, map) {
             // Set CSS styles for the DIV containing the control
-            //controlDiv.style.padding = '5px';
-            var otherLocationControlUI = document.createElement('div');
-            otherLocationControlUI.className = 'btn-group'
-            otherLocationControlUI.style.cursor = 'pointer';
-            otherLocationControlUI.title = 'Click to choose from a list of locations';
-            otherLocationControlUI.style.position = "relative";
-            otherLocationControlUI.style.display = "inline";
-            otherLocationControlUI.style.margin = "2px";
-            controlDiv.appendChild(otherLocationControlUI);
+            controlDiv.style.padding = '5px';
+            var controlUI = document.createElement('div');
+            controlUI.style.cursor = 'pointer';
+            controlUI.title = 'Click for other locations';
+            controlUI.style.position = "relative";
+            controlUI.style.display = "inline";
+            controlUI.style.margin = "2px";
+            controlDiv.appendChild(controlUI);
             var controlText = document.createElement('Button');
-            controlText.textContent = 'Other Locations  ';
-            controlText.className = 'btn btn-primary dropdown-toggle';
-            controlText.setAttribute("type",'button');
-            controlText.setAttribute("data-toggle", 'dropdown');
-            controlText.setAttribute("aria-expanded",'false');
+            controlText.textContent = '';
+            controlText.className = 'btn btn-warning btn-xs';
             //controlText.style = 'width: 62px;';
-            //controlText.style.position = "relative";
-            //controlText.style.display = "inline";
+            controlText.style.position = "relative";
+            controlText.style.display = "inline";
             //controlText.style.margin = "5px";
-            otherLocationControlUI.appendChild(controlText);
+            controlUI.appendChild(controlText);
             var controlTextGlyph = document.createElement('span');
-            controlTextGlyph.className = 'caret';
+            controlTextGlyph.className = 'glyphicon glyphicon-list';
             controlText.appendChild(controlTextGlyph);
-            // create the other locations menu container
-            var otherLocationsListContainer = document.createElement('ul');
-            otherLocationsListContainer.className = 'dropdown-menu';
-            otherLocationsListContainer.setAttribute("role",'menu');
-            otherLocationControlUI.appendChild(otherLocationsListContainer);
-            // add the other locations items
-            var item1 = document.createElement('li');
-            item1.textContent = 'First Location';
-            otherLocationsListContainer.appendChild(item1);
-            var item2 = document.createElement('li');
-            item2.textContent = 'Second Location';
-            otherLocationsListContainer.appendChild(item2);
-            // Setup the click event listeners: 
-            google.maps.event.addDomListener(otherLocationsListContainer, 'click', function() {
-                //alert("Pressed Other Location");
-                console.log("Pressed Other Location");
-                //useMyCurrentLocation();
+            // Setup the click event listeners: simply set the map to
+            // Heathrow
+            google.maps.event.addDomListener(controlUI, 'click', function() {
+                alert("Other location list selected");
+            });
+        }
+        //
+        function ResetLocationsControl(controlDiv, map) {
+            // Set CSS styles for the DIV containing the control
+            controlDiv.style.padding = '5px';
+            var controlUI = document.createElement('div');
+            controlUI.style.cursor = 'pointer';
+            controlUI.title = 'Click to reset map';
+            controlUI.style.position = "relative";
+            controlUI.style.display = "inline";
+            controlUI.style.margin = "2px";
+            controlDiv.appendChild(controlUI);
+            var controlText = document.createElement('Button');
+            controlText.textContent = '';
+            controlText.className = 'btn btn-success btn-xs';
+            //controlText.style = 'width: 62px;';
+            controlText.style.position = "relative";
+            controlText.style.display = "inline";
+            //controlText.style.margin = "5px";
+            controlUI.appendChild(controlText);
+            var controlTextGlyph = document.createElement('span');
+            controlTextGlyph.className = 'glyphicon glyphicon-refresh';
+            controlText.appendChild(controlTextGlyph);
+            // Setup the click event listeners: simply set the map to
+            // Heathrow
+            google.maps.event.addDomListener(controlUI, 'click', function() {
+                map.setZoom(initialZoom);
+                map.setCenter(initialLatLng);
+                moveMapPointer (initialLatLng,initialTitle);
             });
         }
         //
@@ -140,9 +157,11 @@ angular.module("mapContainer.tsiotsias.uk")
         function initialiseMap(){
             // set up some starter options
             // set up the initial latitude & lognitude
-            var initialLatLng = new google.maps.LatLng(locations.Initial.Lat, locations.Initial.Lng);
+            initialTitle = locations.Initial.Title;
+            initialZoom = locations.Initial.Zoom;
+            initialLatLng = new google.maps.LatLng(locations.Initial.Lat, locations.Initial.Lng);
             var myOptions = {
-                zoom: locations.Initial.Zoom,
+                zoom: initialZoom,
                 center: initialLatLng,
                 panControl: false,
                 zoomControl: false,
@@ -163,16 +182,17 @@ angular.module("mapContainer.tsiotsias.uk")
             mapPointer = new google.maps.Marker({
                 position: initialLatLng, 
                 map: map, 
-                title: locations.Initial.Title});
+                title: initialTitle});
             //
             // Create the DIV to hold the control and
             // call the HomeControl() constructor passing
             // in this DIV.
-            var homeControlDiv = document.createElement('div');
-            var homeControl = new HomeControl(homeControlDiv, map);
-            var currentLocationControl = new CurrentLocationControl(homeControlDiv, map);
-            var otherLocationsControl = new OtherLocationsControl(homeControlDiv, map);
-            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
+            var mapControlDiv = document.createElement('div');
+            var resetLocationsControl = new ResetLocationsControl(mapControlDiv, map);
+            var homeLocationControl = new HomeLocationControl(mapControlDiv, map);
+            var currentLocationControl = new CurrentLocationControl(mapControlDiv, map);
+            var otherLocationsControl = new OtherLocationsControl(mapControlDiv, map);
+            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(mapControlDiv);
             //
             // Check if any 'predefined' locations have been specified
             if (locations.Target.length > 0) {
