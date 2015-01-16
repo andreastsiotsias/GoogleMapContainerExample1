@@ -111,30 +111,94 @@ angular.module("mapContainer.tsiotsias.uk")
             var controlTextGlyph = document.createElement('span');
             controlTextGlyph.className = 'glyphicon glyphicon-list';
             controlText.appendChild(controlTextGlyph);
+            // Create the location selection modal dialogue
+            var locationSelectionDialogue = document.createElement('div');
+            locationSelectionDialogue.className = 'modal fade';
+            locationSelectionDialogue.setAttribute("id", "locationSelectionDialogue");
+            locationSelectionDialogue.setAttribute("tabindex", "-1");
+            locationSelectionDialogue.setAttribute("role", "dialog");
+            locationSelectionDialogue.setAttribute("aria-labelledby", "locationSelectionTitle");
+            locationSelectionDialogue.setAttribute("aria-hidden", "true");
+            // add the actual modal dialogue container
+            var locationSelectionDialogueContainer = document.createElement('div');
+            locationSelectionDialogueContainer.className = 'modal-dialog modal-sm';
+            locationSelectionDialogue.appendChild(locationSelectionDialogueContainer);
+            // add the content container
+            var locationSelectionDialogueContent = document.createElement('div');
+            locationSelectionDialogueContent.className = 'modal-content';
+            locationSelectionDialogueContainer.appendChild(locationSelectionDialogueContent);
+            // add the header content
+            var locationSelectionDialogueHeader = document.createElement('div');
+            locationSelectionDialogueHeader.className = 'modal-header';
+            locationSelectionDialogueContent.appendChild(locationSelectionDialogueHeader);
+            // add the close/exit decoration (button with glyph only) to the dialogue header on top right corner
+            var locationSelectionDialogueHeaderExit = document.createElement('button');
+            locationSelectionDialogueHeaderExit.className = 'close';
+            locationSelectionDialogueHeaderExit.setAttribute("type", "button");
+            locationSelectionDialogueHeaderExit.setAttribute("data-dismiss", "modal");
+            locationSelectionDialogueHeaderExit.setAttribute("aria-hidden", "true");
+            //locationSelectionDialogueHeaderExit.textContent = TIMES;
+            locationSelectionDialogueHeader.appendChild(locationSelectionDialogueHeaderExit);
+            // add the 'close window' glyph icon to the button
+            var locationSelectionDialogueHeaderExitGlyph = document.createElement('span');
+            locationSelectionDialogueHeaderExitGlyph.className = 'glyphicon glyphicon-remove-circle';
+            locationSelectionDialogueHeaderExit.appendChild(locationSelectionDialogueHeaderExitGlyph);
+            // add the heading label to the dialogue header
+            var locationSelectionDialogueHeaderLabel = document.createElement('h5');
+            locationSelectionDialogueHeaderLabel.className = 'modal-title';
+            locationSelectionDialogueHeaderLabel.setAttribute("id", "locationSelectionTitle");
+            locationSelectionDialogueHeaderLabel.textContent = 'Select a location ......';
+            locationSelectionDialogueHeader.appendChild(locationSelectionDialogueHeaderLabel);
+            // add the body content
+            var locationSelectionDialogueBody = document.createElement('div');
+            locationSelectionDialogueBody.className = 'modal-body';
+            locationSelectionDialogueContent.appendChild(locationSelectionDialogueBody);
+            // add the location selection options
+            var locationSelectionOptions = document.createElement('select');
+            locationSelectionOptions.className = 'form-control btn-warning';
+            locationSelectionOptions.setAttribute("id", "locationSelectionOptions");
+            locationSelectionDialogueBody.appendChild(locationSelectionOptions);
+            // add the footer content
+            var locationSelectionDialogueFooter = document.createElement('div');
+            locationSelectionDialogueFooter.className = 'modal-footer';
+            locationSelectionDialogueContent.appendChild(locationSelectionDialogueFooter);
+            // add the Go button to the footer
+            var locationSelectionGoButton = document.createElement('button');
+            locationSelectionGoButton.className = 'btn btn-primary btn-xs';
+            locationSelectionGoButton.setAttribute("id", "locationSelectionGoButton");
+            locationSelectionGoButton.setAttribute("type", "button");
+            //locationSelectionGoButton.textContent = 'Go';
+            locationSelectionDialogueFooter.appendChild(locationSelectionGoButton);
+            // add a glyph to the Go button
+            var locationSelectionGoButtonGlyph = document.createElement('span');
+            locationSelectionGoButtonGlyph.className = 'glyphicon glyphicon-ok-sign';
+            locationSelectionGoButton.appendChild(locationSelectionGoButtonGlyph);
             //
-            // Create the list of locations based on theJSOn data received
-            var locationSelectionElement = $("#locationSelectionOptions")[0];
+            // Setup variables related to the location selection modal dialogue
+            //var locationSelectionDialogue = $("#locationSelectionDialogue");
+            //var locationSelectionOptions = $("#locationSelectionOptions")[0];
+            //var locationSelectionGoButton = $("#locationSelectionGoButton")[0];
+            // Create the list of locations based on the Locations.json data
             for (i=0; i<locations.Target.length; i++) {
                 option=document.createElement('option');
                 option.textContent = locations.Target[i].Title;
-                locationSelectionElement.appendChild(option);
+                locationSelectionOptions.appendChild(option);
             }
-            // Setup the click event listener
+            // Setup the click event listener on the location list in map
             google.maps.event.addDomListener(controlUI, 'click', function() {
-                //alert("Other location list selected");
-                var modalGoButton = $("#myModalGo")[0];
-                google.maps.event.addDomListener(modalGoButton, 'click', function () {
-                    var locationIndex = $("#locationSelectionOptions")[0].selectedIndex;
-                    //alert("Go button was pressed on option : "+locations.Target[locationIndex].Title);
-                    map.setZoom(locations.Target[locationIndex].Zoom);
-                    gotoLatLng = new google.maps.LatLng(locations.Target[locationIndex].Lat, 
-                        locations.Target[locationIndex].Lng);
-                    map.setCenter(gotoLatLng);
-                    moveMapPointer (gotoLatLng,locations.Target[locationIndex].Title);
-                    $("#myModal").modal('hide');   
-                });
-                $("#myModal").modal('show');
-                });
+                //Just show the location selection modal dialogue
+                $(locationSelectionDialogue).modal('show');
+            });
+            // Setup the click event listener on the Go button of the modal dialogue
+            google.maps.event.addDomListener(locationSelectionGoButton, 'click', function () {
+                var locationIndex = $("#locationSelectionOptions")[0].selectedIndex;
+                map.setZoom(locations.Target[locationIndex].Zoom);
+                gotoLatLng = new google.maps.LatLng(locations.Target[locationIndex].Lat, 
+                    locations.Target[locationIndex].Lng);
+                map.setCenter(gotoLatLng);
+                moveMapPointer (gotoLatLng,locations.Target[locationIndex].Title);
+                $(locationSelectionDialogue).modal('hide');   
+            });
         }
         //
         function ResetLocationsControl(controlDiv, map) {
@@ -158,8 +222,7 @@ angular.module("mapContainer.tsiotsias.uk")
             var controlTextGlyph = document.createElement('span');
             controlTextGlyph.className = 'glyphicon glyphicon-refresh';
             controlText.appendChild(controlTextGlyph);
-            // Setup the click event listeners: simply set the map to
-            // Heathrow
+            // Setup the click event listeners
             google.maps.event.addDomListener(controlUI, 'click', function() {
                 map.setZoom(initialZoom);
                 map.setCenter(initialLatLng);

@@ -41,6 +41,28 @@ and open the template in the editor.
         <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
             Launch demo modal
         </button>
-    </footer>    
+    </footer>
+    <!-- Modal to handle locations -->
+    <div class="modal fade" id="locationSelectionDialogue" tabindex="-1" role="dialog"
+        aria-labelledby="locationSelectionTitle" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h5 class="modal-title" id="locationSelectionTitle">
+                        Select a location ......
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <select id="locationSelectionOptions" class="form-control btn-warning">
+                    </select> 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-xs pull-left" data-dismiss="modal">Close</button>
+                    <button id="locationSelectionGoButton" type="button" class="btn btn-primary btn-xs">Go</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
