@@ -12,6 +12,7 @@ and open the template in the editor.
 <script src="./js/MapContainerModules.js"></script>
 <script src="./js/MapContainerControllers.js"></script>
 <script src="./js/MapContainerServices.js"></script>
+<script src="./js/ModalDialoguesHandler.js"></script>
 <!-- Latest compiled and minified jQuery - required by Bootstrap CSS -->
 <script src="./js/jquery-2.1.3.min.js"></script>
 <!-- Latest compiled and minified CSS -->
@@ -36,8 +37,39 @@ and open the template in the editor.
     <!-- Begin page footer -->
     <footer id="footer" class="container-fluid">
     	<button type="button" class="btn btn-primary btn-sm" ng-click="mapController.useMyCurrentLocation()">
-    		<span class="glyphicon glyphicon-screenshot"></span> Use My Current Location
+            <span class="glyphicon glyphicon-screenshot"></span> Use My Current Location
     	</button>
+        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
+            Launch demo modal
+        </button>
     </footer>
+    <!-- Modal to handle locations -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div id="myModalActualElement" class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        Location Selection
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <select id="locationSelectionOptions" class="form-control btn-primary">
+                        <option value="0">London</option>
+                        <option value="1">New York</option>
+                        <option value="2">Tokyo</option>
+                        <option value="3">Athens</option>
+                        <option value="4">Stockholm</option>
+                        <option value="5">Munich</option>
+                    </select> 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-xs pull-left" data-dismiss="modal">Close</button>
+                    <button id="myModalGo" type="button" class="btn btn-primary btn-xs">Go</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

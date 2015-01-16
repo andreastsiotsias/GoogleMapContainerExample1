@@ -15,6 +15,7 @@ angular.module("mapContainer.tsiotsias.uk")
         var initialZoom;
         var map;
         var mapPointer;
+        var locations;
         var useMyCurrentLocation;
         // Get a list of Locations to build for
         var locationsPromise = getLocationsService.getData();
@@ -113,7 +114,17 @@ angular.module("mapContainer.tsiotsias.uk")
             // Setup the click event listeners: simply set the map to
             // Heathrow
             google.maps.event.addDomListener(controlUI, 'click', function() {
-                alert("Other location list selected");
+                //alert("Other location list selected");
+                var modalButton = $("#myModalGo")[0];
+                google.maps.event.addDomListener(modalButton, 'click', function () {
+                    var locationIndex = $("#locationSelectionOptions")[0].selectedIndex;
+                    alert("Go button was pressed on option : "+locations.Target[locationIndex].Title);
+                    $("#myModal").modal('hide');
+                    
+                });
+                //alert("Modal Go button"+$("#myModalGo")[0].id);
+                $("#myModal").modal('show');
+                //alert("Modal dialogue shown");
             });
         }
         //
