@@ -111,21 +111,30 @@ angular.module("mapContainer.tsiotsias.uk")
             var controlTextGlyph = document.createElement('span');
             controlTextGlyph.className = 'glyphicon glyphicon-list';
             controlText.appendChild(controlTextGlyph);
-            // Setup the click event listeners: simply set the map to
-            // Heathrow
+            //
+            // Create the list of locations based on theJSOn data received
+            var locationSelectionElement = $("#locationSelectionOptions")[0];
+            for (i=0; i<locations.Target.length; i++) {
+                option=document.createElement('option');
+                option.textContent = locations.Target[i].Title;
+                locationSelectionElement.appendChild(option);
+            }
+            // Setup the click event listener
             google.maps.event.addDomListener(controlUI, 'click', function() {
                 //alert("Other location list selected");
-                var modalButton = $("#myModalGo")[0];
-                google.maps.event.addDomListener(modalButton, 'click', function () {
+                var modalGoButton = $("#myModalGo")[0];
+                google.maps.event.addDomListener(modalGoButton, 'click', function () {
                     var locationIndex = $("#locationSelectionOptions")[0].selectedIndex;
-                    alert("Go button was pressed on option : "+locations.Target[locationIndex].Title);
-                    $("#myModal").modal('hide');
-                    
+                    //alert("Go button was pressed on option : "+locations.Target[locationIndex].Title);
+                    map.setZoom(locations.Target[locationIndex].Zoom);
+                    gotoLatLng = new google.maps.LatLng(locations.Target[locationIndex].Lat, 
+                        locations.Target[locationIndex].Lng);
+                    map.setCenter(gotoLatLng);
+                    moveMapPointer (gotoLatLng,locations.Target[locationIndex].Title);
+                    $("#myModal").modal('hide');   
                 });
-                //alert("Modal Go button"+$("#myModalGo")[0].id);
                 $("#myModal").modal('show');
-                //alert("Modal dialogue shown");
-            });
+                });
         }
         //
         function ResetLocationsControl(controlDiv, map) {
